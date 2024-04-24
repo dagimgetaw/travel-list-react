@@ -7,11 +7,15 @@ const initialItems = [
 ];
 
 export default function App() {
+  const [items, setItems] = useState([]);
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+  }
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -19,19 +23,30 @@ export default function App() {
 function Logo() {
   return <h1>🌴 Far Away 🌴</h1>;
 }
-function Form() {
-  const [desc, setDesc] = useState("");
-  const [quant, setQuant] = useState(1);
+function Form({ onAddItems }) {
+  const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   function handleSubmit(e) {
-    e.preventDefault();
-    if (!desc) return;
+    e.preventDefault(); // prevent the screen update
+    if (!description) return; // if the desc false ot empty it return null value
+
+    const newItem = { description, quantity, packed: false, id: Date.now() };
+    console.log(newItem);
+
+    onAddItems(newItem);
+
+    setDescription("");
+    setQuantity(1);
   }
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your trip?</h3>
-      <select value={quant} onChange={(e) => setQuant(Number(e.target.value))}>
+      <select
+        value={quantity}
+        onChange={(e) => setQuantity(Number(e.target.value))}
+      >
         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
           <option value={num} key={num}>
             {num}
@@ -41,18 +56,18 @@ function Form() {
       <input
         type="text"
         placeholder="Item...."
-        value={desc}
-        onChange={(e) => setDesc(e.target.value)}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
       <button>Add</button>
     </form>
   );
 }
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} />
         ))}
       </ul>
