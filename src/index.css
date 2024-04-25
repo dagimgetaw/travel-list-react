@@ -16,7 +16,8 @@ body {
   font-weight: 500;
 }
 h3,
-p {
+p,
+em {
   font-family: "Quicksand";
   color: #5a3e2b;
 }
